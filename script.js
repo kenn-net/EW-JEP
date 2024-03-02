@@ -131,6 +131,11 @@ function displayDeck() {
     // Sort the remaining cards
     remainingCards.sort();
 
+    // Add labels
+    deckElement.append(document.createTextNode("Overall Deck:"));
+    yourDeckElement.append(document.createTextNode("Your Deck:"));
+    opponentDeckElement.append(document.createTextNode("Opponent's Deck:"));
+
     // Display each card in the sorted deck
     for (let i = 0; i < remainingCards.length; i++) {
         let card = document.createElement("img");
@@ -180,40 +185,36 @@ function discardAndReplace() {
     // Create a new array of remaining cards
     var remainingCards = [...playingCards]; // Copy the playingCards array
 
-    // Remove the discarded cards from the remainingCards array
-    for (let i = 0; i < discardedCards.length; i++) {
-        let index = remainingCards.indexOf(discardedCards[i]);
+    // Remove the discarded cards and the cards in both players' hands from the remainingCards array
+    var cardsToRemove = [...discardedCards, ...yourHand, ...opponentHand];
+    for (let i = 0; i < cardsToRemove.length; i++) {
+        let index = remainingCards.indexOf(cardsToRemove[i]);
         if (index > -1) {
             remainingCards.splice(index, 1);
         }
     }
 
-     // Check if there are enough cards left in the deck
-     if (remainingCards.length >= 5) {
+    // Check if there are enough cards left in the deck
+    if (remainingCards.length >= 5) {
         // Discard the current hand
         discardedCards.push(...yourHand);
         yourHand = [];
 
-        // Create a new array of remaining cards excluding the opponent's hand
-        var remainingCardsExcludingOpponent = remainingCards.filter(card => !opponentHand.includes(card));
-
         // Shuffle the remaining cards
-        remainingCardsExcludingOpponent.sort(() => Math.random() - 0.5);
+        remainingCards.sort(() => Math.random() - 0.5);
 
         // Draw 5 new cards from the deck
-        yourHand = remainingCardsExcludingOpponent.slice(0, 5);
-
-        // Remove the new hand cards from the remaining cards
-        remainingCards = remainingCards.filter(card => !yourHand.includes(card));
+        yourHand = remainingCards.slice(0, 5);
 
         // Update the display
         displayDeck();
         updateStatusBar();
     } else {
         // No more cards to play
-        alert("The game is over!");
+        alert("Not enough remaining cards");
     }
 }
+
 
 function checkWinner() {
     // No more cards to play
