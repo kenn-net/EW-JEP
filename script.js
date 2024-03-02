@@ -22,6 +22,7 @@ deck.sort(() => Math.random() - 0.5);
 // Select 15 random cards from the deck for the playing phase
 var playingCards = deck.slice(0, 15);
 
+
 // Deal 5 cards to each player
 var yourHand = playingCards.slice(0, 5);
 var opponentHand = playingCards.slice(5, 10);
@@ -31,6 +32,29 @@ var game_rules = {
     "rock": "scissors",
     "scissors": "paper",
     "paper": "rock"
+}
+
+window.onload = function(){
+    for (let i = 0; i<3; i++){
+        let choice = document.createElement("img");
+        choice.id = choices[i];
+        choice.src = choices[i] + ".png";
+        choice.addEventListener("click", selectChoice);
+        document.getElementById("choices").append(choice);
+    }
+
+    // Display the deck
+    displayDeck();
+    updateStatusBar();
+
+    // Get the button element
+    var discardReplaceButton = document.getElementById("discard-replace");
+
+    // Add an event listener to the button
+    discardReplaceButton.addEventListener("click", discardAndReplace);
+
+    // Enable the button
+    discardReplaceButton.disabled = false;
 }
 
 function selectChoice(){
@@ -74,22 +98,7 @@ function selectChoice(){
         alert("The game is over!");
     }
     displayDeck()
-}
-
-
-
-
-window.onload = function(){
-    for (let i = 0; i<3; i++){
-        let choice = document.createElement("img");
-        choice.id = choices[i];
-        choice.src = choices[i] + ".png";
-        choice.addEventListener("click", selectChoice);
-        document.getElementById("choices").append(choice);
-    }
-
-    // Display the deck
-    displayDeck();
+    updateStatusBar();
 }
 
 function displayDeck() {
@@ -142,3 +151,71 @@ function displayDeck() {
         opponentDeckElement.append(card);
     }
 }
+
+function updateStatusBar() {
+    var statusBar = document.getElementById("status-bar");
+
+    // Create a new array of remaining cards
+    var remainingCards = [...playingCards]; // Copy the playingCards array
+
+    // Remove the discarded cards from the remainingCards array
+    for (let i = 0; i < discardedCards.length; i++) {
+        let index = remainingCards.indexOf(discardedCards[i]);
+        if (index > -1) {
+            remainingCards.splice(index, 1);
+        }
+    }
+
+    // Count the number of each card type in the remainingCards array
+    var rockCount = remainingCards.filter(card => card === "rock").length;
+    var paperCount = remainingCards.filter(card => card === "paper").length;
+    var scissorsCount = remainingCards.filter(card => card === "scissors").length;
+
+    // Update the status bar
+    statusBar.textContent = "Rock: " + rockCount + ", Paper: " + paperCount + ", Scissors: " + scissorsCount;
+}
+
+function discardAndReplace() {
+    // Create a new array of remaining cards
+    var remainingCards = [...playingCards]; // Copy the playingCards array
+
+    // Remove the discarded cards from the remainingCards array
+    for (let i = 0; i < discardedCards.length; i++) {
+        let index = remainingCards.indexOf(discardedCards[i]);
+        if (index > -1) {
+            remainingCards.splice(index, 1);
+        }
+    }
+
+     // Check if there are enough cards left in the deck
+     if (remainingCards.length >= 5) {
+        // Discard the current hand
+        discardedCards.push(...yourHand);
+        yourHand = [];
+
+        // Create a new array of remaining cards excluding the opponent's hand
+        var remainingCardsExcludingOpponent = remainingCards.filter(card => !opponentHand.includes(card));
+
+        // Shuffle the remaining cards
+        remainingCardsExcludingOpponent.sort(() => Math.random() - 0.5);
+
+        // Draw 5 new cards from the deck
+        yourHand = remainingCardsExcludingOpponent.slice(0, 5);
+
+        // Remove the new hand cards from the remaining cards
+        remainingCards = remainingCards.filter(card => !yourHand.includes(card));
+
+        // Update the display
+        displayDeck();
+        updateStatusBar();
+    } else {
+        // No more cards to play
+        alert("The game is over!");
+    }
+}
+
+
+
+
+
+
