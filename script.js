@@ -99,6 +99,7 @@ function selectChoice(){
     }
     displayDeck()
     updateStatusBar();
+    checkWinner();
 }
 
 function displayDeck() {
@@ -211,6 +212,19 @@ function discardAndReplace() {
     } else {
         // No more cards to play
         alert("The game is over!");
+    }
+}
+
+function checkWinner() {
+    // No more cards to play
+    if (yourHand.length === 0 && opponentHand.length === 0) {
+        if (yourScore > opponentScore) {
+            alert("Congratulations! You won the game! Pogchamp");
+        } else if (yourScore < opponentScore) {
+            alert("Oh no! You lost the game. Skill issue bro. gitgud.");
+        } else {
+            alert("The game is a tie!");
+        }
     }
 }
 
