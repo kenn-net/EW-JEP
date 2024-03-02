@@ -33,17 +33,6 @@ var game_rules = {
     "paper": "rock"
 }
 
-
-window.onload = function(){
-    for (let i = 0; i<3; i++){
-        let choice = document.createElement("img");
-        choice.id = choices[i];
-        choice.src = choices[i] + ".png";
-        choice.addEventListener("click", selectChoice);
-        document.getElementById("choices").append(choice);
-    }
-}
-
 function selectChoice(){
     // Check if there are cards left to play
     if (yourHand.length > 0 && opponentHand.length > 0) {
