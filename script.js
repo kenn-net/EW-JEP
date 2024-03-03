@@ -99,7 +99,9 @@ function selectChoice(){
     }
     displayDeck()
     updateStatusBar();
-    checkWinner();
+
+    // Delay the execution of checkWinner by 100 milliseconds
+    setTimeout(checkWinner, 500);
 }
 
 function displayDeck() {
@@ -228,9 +230,3 @@ function checkWinner() {
         }
     }
 }
-
-
-
-
-
-
